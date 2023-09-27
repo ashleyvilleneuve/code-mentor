@@ -21,7 +21,6 @@ export default function GetStarted() {
       };
     const openai = new OpenAI({
         apiKey: apiKey,
-        dangerouslyAllowBrowser: true,
       });
     const storeData = (value) => {
         try {

@@ -11,7 +11,6 @@ export default function Steps(props) {
     const [steps, setSteps] = useState("");
     const openai = new OpenAI({
         apiKey: apiKey,
-        dangerouslyAllowBrowser: true,
       });
     
     const getSteps = async (project, choice, concept, baseKnowledge) => {
