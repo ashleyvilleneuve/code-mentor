@@ -1,5 +1,4 @@
 import { useState, useEffect, createElement } from 'react';
-import { OpenAI } from "openai";
 import { Button, ListGroup, Spinner } from 'flowbite-react';
 import * as FontAwesome from 'react-icons/fa';
 import presetsProjectSteps from '../../presetsProjectSteps.json';
@@ -7,45 +6,21 @@ import presetsProjectSteps from '../../presetsProjectSteps.json';
 
 
 export default function Steps(props) { 
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    // const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
     const [steps, setSteps] = useState("");
-    const openai = new OpenAI({
-        apiKey: apiKey,
-      });
+    // const openai = new OpenAI({
+    //     // apiKey: apiKey,
+    //   });
     
     const getSteps = async (project, choice, concept, baseKnowledge) => {
-        try{
-        const response = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
-            messages: [{
-                role: "user",
-                content: `I want to create ${project} to understand ${concept} in the context of ${choice}. My experience level in ${choice} is ${baseKnowledge}. Break down the steps I need to take in detail, from start to finish. If I am a beginner, please assume I will not need a web host for my project but will only create a static, local version for now. Please include any tools I need to install. Return your advice with three line breaks between each step.`
-            }],
-            temperature: 0.66,
-            top_p: 0,
-            n: 1,
-            max_tokens: 500,
-            stream: false,
-            frequency_penalty: 0.29,
-            stop: "###"
-        });
-            const stepsString = response.choices[0].message.content;
-            const steps1 = stepsString.split(':\n\n')[1];
-            const stepsArray = steps1.split('\n\n');
-            return stepsArray;
-        } catch (error) {
-            if (error instanceof OpenAI.APIError) {
-                console.error(error.status);  // e.g. 401
-                console.error(error.message); // e.g. The authentication token you passed was invalid...
-                console.error(error.code);  // e.g. 'invalid_api_key'
-                console.error(error.type);  // e.g. 'invalid_request_error'
-            } else {
-                // Non-API error
-                console.log(error);
-            }
-        } finally {
-            console.log("Done");
-        }
+        const _query = `I want to create ${project} to understand ${concept} in the context of ${choice}. My experience level in ${choice} is ${baseKnowledge}. Break down the steps I need to take in detail, from start to finish. If I am a beginner, please assume I will not need a web host for my project but will only create a static, local version for now. Please include any tools I need to install. Return your advice with three line breaks between each step.`;
+        const response = await fetch(`https://rocky-reef-04614-fdf56f3c6cef.herokuapp.com/api?${_query}`);
+        const data = await response.json();
+        console.log(data);
+        const stepsString = data.details.choices[0].message.content;
+        const steps1 = stepsString.split(':\n\n')[1];
+        const stepsArray = steps1.split('\n\n');
+        return stepsArray;
     };
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -81,7 +56,7 @@ export default function Steps(props) {
     return (
         <>
         <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-            {loading ? <Spinner size="xl" aria-label="Loading, please wait..." />            
+            {loading ? <div><Spinner size="xl" aria-label="Loading, please wait..." /><h3>Preparing steps for the project you selected...</h3>     </div>   
             : <ListGroup className="m-5">
                 {steps.map((step, i) => (
                     <ListGroup.Item key={i}>
