@@ -67,7 +67,7 @@ export default function GetStarted() {
         return projects;
     }
     async function getIcons(projects) {
-        const fourth_query=`For each of the projects listed in ${projects}, suggest a good icon to represent it. Choose from icons available in React Icons Font Awesome collection.`;
+        const fourth_query=`For each of the projects listed in this objec: "${projects}", suggest one good, respresentative icon. Choose from icons available in React Icons Font Awesome collection. Your response should contain only the name of the icon you have chosen for each project in PascalCase, formatted as a numbered list. Do not include the names of the projects. Please do not include preambles or pleasnatries.`;
         const response = await fetch(`https://rocky-reef-04614-fdf56f3c6cef.herokuapp.com/api?${fourth_query}`);
         const data = await response.json();
         console.log(data);
@@ -76,22 +76,26 @@ export default function GetStarted() {
     }
 
     async function cleanIconData(icons) {
-        const iconArray = icons.split("\n\n");
+        const iconArray = icons.split("\n");
         iconArray.map((icon, i) => {
-            icon.includes('\"') ? iconArray[i] = icon.split('\"')[1].split('\"')[0] : iconArray[i] = icon;
+            (/^\d/g).test(icon) ? iconArray[i] = iconArray[i].replace(/^\d/g, "").replace(": ", "").replace(". ", "") : iconArray[i] = icon;
+            icon.includes('↵') ? iconArray[i] = iconArray[i].split('↵')[0] : iconArray[i] = iconArray[i];
+            icon.includes(' (') ? iconArray[i] = iconArray[i].split('(')[0] : iconArray[i] = iconArray[i];
+            console.log(iconArray[i]);
         });
         const filteredIcons = iconArray.filter(function(icon) {
             return !icon.startsWith('Note:');
         });
-        console.log(filteredIcons)
+        console.log(`filteredIcons${filteredIcons}`)
         return filteredIcons;
     }
 
     async function cleanProjectData(projects) {
         const projectArray = projects.split("\n\n");
         const filteredProjects = projectArray.filter(function(project) {
-            return !project.startsWith('Note:');
+            return !project.startsWith('Note:') && (/^\d/g).test(project);
         });
+        console.log(filteredProjects)
         return filteredProjects;
     }
 

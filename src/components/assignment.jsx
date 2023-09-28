@@ -13,7 +13,7 @@ export default function Assignment(props) {
       }, []);
     const newIconArray = props.icons.map((icon, i) => (
         icon = icon.replace('-', ' ').replace(/(?:^\w|[A-Z]|\b\w)/g, (match) => match.toUpperCase()).replace(/\s+/g, ''),
-        icon = `Fa${icon}`
+        !icon.startsWith('Fa') ? icon = `Fa${icon}` : icon
     ));
    console.log(newIconArray);
     

@@ -6,20 +6,17 @@ import presetsProjectSteps from '../../presetsProjectSteps.json';
 
 
 export default function Steps(props) { 
-    // const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
     const [steps, setSteps] = useState("");
-    // const openai = new OpenAI({
-    //     // apiKey: apiKey,
-    //   });
     
     const getSteps = async (project, choice, concept, baseKnowledge) => {
-        const _query = `I want to create ${project} to understand ${concept} in the context of ${choice}. My experience level in ${choice} is ${baseKnowledge}. Break down the steps I need to take in detail, from start to finish. If I am a beginner, please assume I will not need a web host for my project but will only create a static, local version for now. Please include any tools I need to install. Return your advice with three line breaks between each step.`;
+        const _query = `I want to create ${project} to understand ${concept} in the context of ${choice}. My experience level in ${choice} is ${baseKnowledge}. Break down the steps I need to take in detail, from start to finish. If I am an Absolute Beginner, please assume I will not need a web host for my project but will only create a static, local version for now. Please include any tools I need to install. Your response should be formatted as numbered steps, with no introduction, preamble, or pleasantries. Insert six x characters at the end of each numbered step so we can easily break the result into an array.`;
         const response = await fetch(`https://rocky-reef-04614-fdf56f3c6cef.herokuapp.com/api?${_query}`);
         const data = await response.json();
         console.log(data);
         const stepsString = data.details.choices[0].message.content;
-        const steps1 = stepsString.split(':\n\n')[1];
-        const stepsArray = steps1.split('\n\n');
+        console.log(stepsString);
+        const stepsArray = stepsString.split('xxxxxx');
+        console.log(stepsArray);
         return stepsArray;
     };
     const [loading, setLoading] = useState(true);
@@ -31,7 +28,9 @@ export default function Steps(props) {
           setLoading(false);
         } else if (props.choice === "Web Development" || props.choice === "Javascript") {
             const shortProject = props.project.replace(/\d/g, '').replace('.', '').split(':')[0].trim()
+            console.log(shortProject)
             const stepsData = presetsProjectSteps.filter(item => {
+                console.log(item.Project)
                 return item.Project === shortProject;
               });
             const steps = stepsData[0].Steps.split('###');
@@ -40,7 +39,8 @@ export default function Steps(props) {
             setSteps(steps);
             setLoading(false);
         } else {
-            getSteps(props.project, props.choice, props.baseKnowledge)
+            console.log(props.project, props.choice, props.baseKnowledge);
+            getSteps(props.project, props.choice, props.concept, props.baseKnowledge)
             .then((steps) => {
                 value.projectSteps = steps;
                 localStorage.setItem('value', JSON.stringify(value));
