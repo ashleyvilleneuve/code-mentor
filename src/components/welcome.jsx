@@ -45,7 +45,7 @@ export default function Welcome() {
     function Animate({ children, on }) {
         return (on === undefined)
             ? ""
-            : <div className="animate-zoomIn m-10 w-100 text-7xl font-extrabold intro" key={on}>{children}</div>
+            : <div className="animate-zoomIn m-10 w-100 text-3xl md:text-7xl break-words md:break-normal font-extrabold intro" key={on}>{children}</div>
         }
 
     return (
