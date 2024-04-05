@@ -40,7 +40,7 @@ export default function GetStarted() {
 
     async function getConcept(choice, baseKnowledge) {
         const first_query=`I want to learn "${choice}". My experience level in this topic is "${baseKnowledge}. In a single word, which concept should I learn first?`;
-        const response = await fetch(`https://rocky-reef-04614-fdf56f3c6cef.herokuapp.com/api?${first_query}`);
+        const response = await fetch(`https://seashell-app-fxv3c.ondigitalocean.app/api?${first_query}`);
         const data = await response.json();
         console.log(data);
         let concept = data.details.choices[0].message.content;
@@ -52,7 +52,7 @@ export default function GetStarted() {
 
     async function getDefinition(choice, concept) {
         const second_query=`Define "${concept}" in the context of ${choice}. Be as concise as possible.`;
-        const response = await fetch(`https://rocky-reef-04614-fdf56f3c6cef.herokuapp.com/api?${second_query}`);
+        const response = await fetch(`https://seashell-app-fxv3c.ondigitalocean.app/api?${second_query}`);
         const data = await response.json();
         console.log(data);
         const definition = data.details.choices[0].message.content;
@@ -60,7 +60,7 @@ export default function GetStarted() {
     }
     async function getProjects(choice, concept) {
         const third_query = `To begin learning "${choice}" with the concept "${concept}", what are 3 good first MVP projects I could build? Answer in point form.`;
-        const response = await fetch(`https://rocky-reef-04614-fdf56f3c6cef.herokuapp.com/api?${third_query}`);
+        const response = await fetch(`https://seashell-app-fxv3c.ondigitalocean.app/api?${third_query}`);
         const data = await response.json();
         console.log(data);
         const projects = data.details.choices[0].message.content;
@@ -68,7 +68,7 @@ export default function GetStarted() {
     }
     async function getIcons(projects) {
         const fourth_query=`For each of the projects listed in this objec: "${projects}", suggest one good, respresentative icon. Choose from icons available in React Icons Font Awesome collection. Your response should contain only the name of the icon you have chosen for each project in PascalCase, formatted as a numbered list. Do not include the names of the projects. Please do not include preambles or pleasnatries.`;
-        const response = await fetch(`https://rocky-reef-04614-fdf56f3c6cef.herokuapp.com/api?${fourth_query}`);
+        const response = await fetch(`https://seashell-app-fxv3c.ondigitalocean.app/api?${fourth_query}`);
         const data = await response.json();
         console.log(data);
         const icons = data.details.choices[0].message.content;
