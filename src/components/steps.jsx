@@ -26,18 +26,6 @@ export default function Steps(props) {
         if (value.projectSteps) {
           setSteps(value.projectSteps);
           setLoading(false);
-        } else if (props.choice === "Web Development" || props.choice === "Javascript") {
-            const shortProject = props.project.replace(/\d/g, '').replace('.', '').split(':')[0].trim()
-            console.log(shortProject)
-            const stepsData = presetsProjectSteps.filter(item => {
-                console.log(item.Project)
-                return item.Project === shortProject;
-              });
-            const steps = stepsData[0].Steps.split('###');
-            value.projectSteps = steps;
-            localStorage.setItem('value', JSON.stringify(value));
-            setSteps(steps);
-            setLoading(false);
         } else {
             console.log(props.project, props.choice, props.baseKnowledge);
             getSteps(props.project, props.choice, props.concept, props.baseKnowledge)

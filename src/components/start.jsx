@@ -59,7 +59,7 @@ export default function GetStarted() {
         return definition;
     }
     async function getProjects(choice, concept) {
-        const third_query = `To begin learning "${choice}" with the concept "${concept}", what are 3 good first MVP projects I could build? Answer in point form.`;
+        const third_query = `To begin learning "${choice}" with the concept "${concept}", what are 3 good first MVP projects I could build? Only answer in point form, with two new lines separating each point.`;
         const response = await fetch(`https://seashell-app-fxv3c.ondigitalocean.app/api?${third_query}`);
         const data = await response.json();
         console.log(data);
@@ -67,7 +67,7 @@ export default function GetStarted() {
         return projects;
     }
     async function getIcons(projects) {
-        const fourth_query=`For each of the projects listed in this objec: "${projects}", suggest one good, respresentative icon. Choose from icons available in React Icons Font Awesome collection. Your response should contain only the name of the icon you have chosen for each project in PascalCase, formatted as a numbered list. Do not include the names of the projects. Please do not include preambles or pleasnatries.`;
+        const fourth_query=`"For each of the projects listed in this object: "${projects}", suggest one good, representative icon. Choose exclusively from the Font Awesome collection available in React Icons. Your response should contain only the name of the icon you have chosen for each project, formatted in PascalCase as a numbered list. Do not include the names of the projects or any icons from other collections like Material Icons or Weather Icons. Please do not include preambles or pleasantries.`;
         const response = await fetch(`https://seashell-app-fxv3c.ondigitalocean.app/api?${fourth_query}`);
         const data = await response.json();
         console.log(data);
@@ -115,27 +115,14 @@ export default function GetStarted() {
     async function getStarted() {
         document.getElementById("levelButtons").classList.add("hidden");
         document.getElementById("assignment").classList.remove("hidden");
-        if (choice === "Web Development" || choice === "Javascript") {
-            const filteredData = presetsChoices.filter(item => {
-                return item.Choice === choice && item.Level === baseKnowledge;
-              });
-            responseValues.definition = filteredData[0].Definition;
-            responseValues.concept = filteredData[0].Concept;
-            const projects = filteredData[0].Projects;
-            responseValues.iconArray = filteredData[0].Icons.split(",");
-            responseValues.projectArray = projects.split("###");
-            await saveToLocalStorage(baseKnowledge, choice, responseValues.concept, responseValues.definition, responseValues.projectArray, responseValues.iconArray); 
-            setAssignment(<Assignment choice={choice} baseKnowledge={baseKnowledge} concept={responseValues.concept} projects={responseValues.projectArray} definition={responseValues.definition} icons={responseValues.iconArray} />);
-        } else {
-            responseValues.concept = await getConcept(choice, baseKnowledge);
-            responseValues.definition = await getDefinition(choice, responseValues.concept);
-            const projects = await getProjects(choice, responseValues.concept);
-            const icons = await getIcons(projects);
-            responseValues.projectArray = await cleanProjectData(projects);
-            responseValues.iconArray = await cleanIconData(icons);
-            await saveToLocalStorage(baseKnowledge, choice, responseValues.concept, responseValues.definition, responseValues.projectArray, responseValues.iconArray); 
-            setAssignment(<Assignment choice={choice} baseKnowledge={baseKnowledge} concept={responseValues.concept} projects={responseValues.projectArray} definition={responseValues.definition} icons={responseValues.iconArray} />);
-        }	      
+        responseValues.concept = await getConcept(choice, baseKnowledge);
+        responseValues.definition = await getDefinition(choice, responseValues.concept);
+        const projects = await getProjects(choice, responseValues.concept);
+        const icons = await getIcons(projects);
+        responseValues.projectArray = await cleanProjectData(projects);
+        responseValues.iconArray = await cleanIconData(icons);
+        await saveToLocalStorage(baseKnowledge, choice, responseValues.concept, responseValues.definition, responseValues.projectArray, responseValues.iconArray); 
+        setAssignment(<Assignment choice={choice} baseKnowledge={baseKnowledge} concept={responseValues.concept} projects={responseValues.projectArray} definition={responseValues.definition} icons={responseValues.iconArray} />); 
         setLoading(false);
         console.log('All work done');
     }
